@@ -9,9 +9,13 @@ const usersPath = path.join(process.cwd(), "data", "users.json")
 
 export async function readUsers(): Promise<AuthUserRecord[]> {
   try {
-    return JSON.parse(await fs.readFile(usersPath, "utf8")) as AuthUserRecord[]
+    const raw = (await fs.readFile(usersPath, "utf8")).trim()
+    if (!raw) return []
+    const users = JSON.parse(raw) as unknown
+    return Array.isArray(users) ? users as AuthUserRecord[] : []
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return []
+    if (error instanceof SyntaxError) return []
     throw error
   }
 }

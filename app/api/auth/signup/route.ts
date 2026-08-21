@@ -16,8 +16,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "An account already exists for this email." }, { status: 409 })
     }
     const user = { id: createUserId(), name: String(name).trim(), email: normalizedEmail, mobile: normalizedMobile, passwordHash: await hashPassword(String(password)), createdAt: new Date().toISOString() }
+    const token = signToken(user)
     await addUser(user)
-    return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email }, token: signToken(user) }, { status: 201 })
+    return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email }, token }, { status: 201 })
   } catch (error) {
     console.error("Signup failed", error)
     return NextResponse.json({ error: "Unable to create the account. Check the server configuration." }, { status: 500 })
