@@ -1,5 +1,5 @@
 export type AgentStatus = "IDLE" | "LISTENING" | "THINKING" | "GUIDING" | "STOPPED" | "ERROR"
-export type AgentLanguage = "en-IN" | "hi-IN" | "ta-IN" | "te-IN" | "kn-IN" | "bn-IN" | "mr-IN"
+export type AgentLanguage = "en-IN" | "hi-IN" | "mixed"
 export type AgentSession = { active: boolean; goal: string; language: AgentLanguage; listening?: boolean; awaitingNavigation?: boolean; history?: string[] }
 export type AgentAction = "click" | "input" | "select" | "scroll" | "hover" | "highlight" | "wait" | "none"
 
