@@ -1,0 +1,1 @@
+{"root":["./src/vite-env.d.ts","./src/background/service-worker.ts","./src/content/agent-controller.ts","./src/content/dom-analyzer.ts","./src/content/index.ts","./src/content/overlay.ts","./src/popup/main.tsx","./src/shared/types.ts","./vite.config.ts","./manifest.json"],"version":"5.9.3"}

@@ -40,16 +40,17 @@ export default function FindSchemePage() {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [processing, setProcessing] = useState(false)
+  const [validationError, setValidationError] = useState("")
 
   const [profile, setProfile] = useState<UserProfile>({
     fullName: "",
     age: "",
     gender: "",
-    state: "Maharashtra",
+    state: "",
     district: "",
-    occupationType: "employee",
+    occupationType: undefined,
     annualIncome: "",
-    bplStatus: "no",
+    bplStatus: "",
     landOwnership: "",
     landSize: "",
     cropType: "",
@@ -63,6 +64,17 @@ export default function FindSchemePage() {
   }
 
   function handleNext() {
+    const valuesByStep = [
+      [profile.fullName, profile.age, profile.gender, profile.state, profile.district],
+      [profile.occupationType, ...(profile.occupationType === "farmer" ? [profile.landOwnership, profile.landSize, profile.cropType] : []), ...(profile.occupationType === "student" ? [profile.educationLevel, profile.course] : [])],
+      [profile.annualIncome, profile.bplStatus],
+      [profile.query],
+    ]
+    if (valuesByStep[step].some((value) => !String(value ?? "").trim())) {
+      setValidationError("Please complete every field before continuing.")
+      return
+    }
+    setValidationError("")
     if (step < STEPS.length - 1) {
       setStep(step + 1)
       return
@@ -135,6 +147,10 @@ export default function FindSchemePage() {
                 onChange={(e) => update("fullName", e.target.value)}
               />
             </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="district">District</Label>
+              <Input id="district" placeholder="e.g. Pune" value={profile.district} onChange={(e) => update("district", e.target.value)} />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="age">Age</Label>
@@ -150,7 +166,7 @@ export default function FindSchemePage() {
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="gender">Gender</Label>
-                <Select value={profile.gender} onValueChange={(v) => update("gender", v)}>
+                <Select value={profile.gender} onValueChange={(v) => update("gender", v ?? "")}>
                   <SelectTrigger id="gender" className="w-full">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
@@ -166,9 +182,9 @@ export default function FindSchemePage() {
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="state">State / UT</Label>
-              <Select value={profile.state} onValueChange={(v) => update("state", v)}>
+              <Select value={profile.state} onValueChange={(v) => update("state", v ?? "")}>
                 <SelectTrigger id="state" className="w-full">
-                  <SelectValue />
+                  <SelectValue placeholder="Select your state / UT" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -193,7 +209,7 @@ export default function FindSchemePage() {
                 onValueChange={(v) => update("occupationType", v as UserProfile["occupationType"])}
               >
                 <SelectTrigger id="occupationType" className="w-full">
-                  <SelectValue />
+                  <SelectValue placeholder="Select your occupation" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -217,6 +233,10 @@ export default function FindSchemePage() {
                     value={profile.landOwnership}
                     onChange={(e) => update("landOwnership", e.target.value)}
                   />
+                </div>
+                <div className="col-span-2 flex flex-col gap-2">
+                  <Label htmlFor="cropType">Main crop</Label>
+                  <Input id="cropType" placeholder="e.g. Rice" value={profile.cropType} onChange={(e) => update("cropType", e.target.value)} />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="landSize">Land size (acres)</Label>
@@ -271,9 +291,9 @@ export default function FindSchemePage() {
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="bpl">Do you hold a BPL / ration card?</Label>
-              <Select value={profile.bplStatus} onValueChange={(v) => update("bplStatus", v)}>
+              <Select value={profile.bplStatus} onValueChange={(v) => update("bplStatus", v ?? "")}>
                 <SelectTrigger id="bpl" className="w-full">
-                  <SelectValue />
+                  <SelectValue placeholder="Select one" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -289,7 +309,7 @@ export default function FindSchemePage() {
 
         {step === 3 && (
           <div className="flex flex-col gap-3">
-            <Label htmlFor="query">Tell us more about your situation (optional)</Label>
+            <Label htmlFor="query">Tell us more about your situation</Label>
             <Textarea
               id="query"
               rows={5}
@@ -298,11 +318,13 @@ export default function FindSchemePage() {
               onChange={(e) => update("query", e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              The more detail you share, the better our AI can match you to relevant schemes.
+              Add a short description so we can match you to more relevant schemes.
             </p>
           </div>
         )}
       </div>
+
+      {validationError && <p role="alert" className="mt-4 text-sm font-medium text-destructive">{validationError}</p>}
 
       <div className="mt-6 flex items-center justify-between">
         <Button variant="ghost" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>

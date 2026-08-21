@@ -13,13 +13,24 @@ export default function LoginPage() {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [identifier, setIdentifier] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSubmitting(true)
-    const name = identifier.includes("@") ? identifier.split("@")[0] : "Citizen"
-    setAuthUser({ name: name.charAt(0).toUpperCase() + name.slice(1), email: identifier || "you@example.com" })
-    setTimeout(() => router.push("/dashboard"), 500)
+    setError("")
+    try {
+      const response = await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ identifier, password }) })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || "Unable to log in.")
+      setAuthUser(result.user, result.token)
+      router.push("/dashboard")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to log in.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -66,10 +77,14 @@ export default function LoginPage() {
                     type="password"
                     required
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="h-12 rounded-xl pl-10 transition-shadow focus-visible:shadow-[0_0_0_4px_var(--ring)]"
                   />
                 </div>
               </Field>
+
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
               <Button type="submit" size="lg" className="h-12 font-semibold" disabled={submitting}>
                 {submitting ? "Logging in…" : "Login"}
@@ -85,9 +100,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          This is a demo experience — any details will sign you in.
-        </p>
       </div>
     </main>
   )

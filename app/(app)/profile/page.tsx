@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { clearAuthUser, getAuthUser, getProfile, getSavedSchemes, saveProfile, setAuthUser } from "@/lib/storage"
+import { clearAuthUser, getAuthUser, getProfile, getSavedSchemes, saveProfile, setAuthUser, type AuthUser } from "@/lib/storage"
 import type { UserProfile } from "@/lib/types"
 
 export default function ProfilePage() {
   const router = useRouter()
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
   const [profile, setProfile] = useState<UserProfile>({})
   const [savedCount, setSavedCount] = useState(0)
 
@@ -77,7 +77,7 @@ export default function ProfilePage() {
             <Input
               id="name"
               value={user?.name ?? ""}
-              onChange={(e) => setUser((u) => ({ name: e.target.value, email: u?.email ?? "" }))}
+              onChange={(e) => setUser((u) => ({ id: u?.id ?? "", name: e.target.value, email: u?.email ?? "" }))}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -86,7 +86,7 @@ export default function ProfilePage() {
               id="email"
               type="email"
               value={user?.email ?? ""}
-              onChange={(e) => setUser((u) => ({ name: u?.name ?? "", email: e.target.value }))}
+              onChange={(e) => setUser((u) => ({ id: u?.id ?? "", name: u?.name ?? "", email: e.target.value }))}
             />
           </div>
           <div className="flex flex-col gap-2">

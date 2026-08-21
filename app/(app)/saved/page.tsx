@@ -21,7 +21,7 @@ export default function SavedSchemesPage() {
 
   const resolved = saved
     .map((s) => ({ scheme: getSchemeById(s.schemeId), matchScore: s.matchScore }))
-    .filter((s): s is { scheme: NonNullable<typeof s.scheme>; matchScore?: number } => Boolean(s.scheme))
+    .filter((s): s is { scheme: NonNullable<typeof s.scheme>; matchScore: number | undefined } => Boolean(s.scheme))
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-8 lg:px-12">

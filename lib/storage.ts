@@ -1,12 +1,14 @@
 "use client"
 
-import type { RecentSearch, SavedScheme, UserProfile } from "./types"
+import type { ChatMessage, RecentSearch, SavedScheme, SchemeMatch, UserProfile } from "./types"
 
 const KEYS = {
   profile: "schemesathi:profile",
   saved: "schemesathi:saved",
   recent: "schemesathi:recent-searches",
   auth: "schemesathi:auth-user",
+  token: "schemesathi:access-token",
+  recommendations: "schemesathi:recommendations",
 } as const
 
 function read<T>(key: string, fallback: T): T {
@@ -30,6 +32,31 @@ export function getProfile(): UserProfile {
 
 export function saveProfile(profile: UserProfile) {
   write(KEYS.profile, profile)
+}
+
+type RecommendationCache = { profile: string; matches: SchemeMatch[]; usingAi: boolean; savedAt: string }
+
+export function getRecommendationCache(profile: UserProfile): RecommendationCache | null {
+  const cached = read<RecommendationCache[] | RecommendationCache>(KEYS.recommendations, [])
+  const caches = Array.isArray(cached) ? cached : [cached]
+  return caches.find((cache) => cache.profile === JSON.stringify(profile)) ?? null
+}
+
+export function saveRecommendationCache(profile: UserProfile, matches: SchemeMatch[], usingAi: boolean) {
+  const cached = read<RecommendationCache[] | RecommendationCache>(KEYS.recommendations, [])
+  const caches = Array.isArray(cached) ? cached : [cached]
+  const entry: RecommendationCache = { profile: JSON.stringify(profile), matches, usingAi, savedAt: new Date().toISOString() }
+  write(KEYS.recommendations, [entry, ...caches.filter((cache) => cache.profile !== entry.profile)].slice(0, 10))
+}
+
+const chatKey = (schemeId: string) => `schemesathi:scheme-chat:${schemeId}`
+
+export function getSchemeChatHistory(schemeId: string): ChatMessage[] {
+  return read<ChatMessage[]>(chatKey(schemeId), [])
+}
+
+export function saveSchemeChatHistory(schemeId: string, messages: ChatMessage[]) {
+  write(chatKey(schemeId), messages.slice(-50))
 }
 
 export function getSavedSchemes(): SavedScheme[] {
@@ -69,15 +96,23 @@ export function addRecentSearch(query: string) {
   write(KEYS.recent, updated)
 }
 
-export function getAuthUser(): { name: string; email: string } | null {
-  return read(KEYS.auth, null as { name: string; email: string } | null)
+export type AuthUser = { id: string; name: string; email: string }
+
+export function getAuthUser(): AuthUser | null {
+  return read(KEYS.auth, null as AuthUser | null)
 }
 
-export function setAuthUser(user: { name: string; email: string }) {
+export function setAuthUser(user: AuthUser, token?: string) {
   write(KEYS.auth, user)
+  if (token) write(KEYS.token, token)
+}
+
+export function getAccessToken(): string | null {
+  return read(KEYS.token, null as string | null)
 }
 
 export function clearAuthUser() {
   if (typeof window === "undefined") return
   window.localStorage.removeItem(KEYS.auth)
+  window.localStorage.removeItem(KEYS.token)
 }

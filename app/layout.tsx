@@ -55,7 +55,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${_plusJakarta.variable} ${_manrope.variable} bg-background`}>
       <body className="font-sans antialiased">
-        <TooltipProvider delayDuration={200}>
+        <TooltipProvider delay={200}>
           {children}
           <Toaster />
         </TooltipProvider>

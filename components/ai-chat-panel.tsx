@@ -3,38 +3,81 @@
 import { useEffect, useRef, useState } from "react"
 import { ArrowUp, Sparkles, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { getFaqAnswer, defaultSuggestedQuestions } from "@/lib/faq-engine"
+import { defaultSuggestedQuestions } from "@/lib/faq-engine"
+import { getAccessToken, getSchemeChatHistory, saveSchemeChatHistory } from "@/lib/storage"
 import { cn } from "@/lib/utils"
 import type { ChatMessage, Scheme } from "@/lib/types"
+
+function InlineMarkdown({ text }: { text: string }) {
+  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)]+\)|https?:\/\/[^\s]+)/g)
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) return <strong key={index}>{part.slice(2, -2)}</strong>
+    const link = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/)
+    if (link) return <a key={index} href={link[2]} target="_blank" rel="noreferrer" className="font-medium text-ai-blue-foreground underline underline-offset-2">{link[1]}</a>
+    if (/^https?:\/\//.test(part)) return <a key={index} href={part} target="_blank" rel="noreferrer" className="font-medium text-ai-blue-foreground underline underline-offset-2">{part}</a>
+    return part
+  })
+}
+
+function ChatAnswer({ content }: { content: string }) {
+  return <div className="space-y-2">{content.split("\n").filter(Boolean).map((line, index) => {
+    const bullet = line.match(/^\s*[-*]\s+(.+)/)
+    const numbered = line.match(/^\s*(\d+)\.\s+(.+)/)
+    const heading = line.match(/^\s*(?:#{1,3}\s+)?\*\*(.+?)\*\*:?[\s]*$/)
+    if (heading) return <p key={index} className="font-semibold text-foreground"><InlineMarkdown text={heading[1]} /></p>
+    if (bullet) return <div key={index} className="flex gap-2"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-ai-blue-foreground" /><span><InlineMarkdown text={bullet[1]} /></span></div>
+    if (numbered) return <div key={index} className="flex gap-2"><span className="font-semibold text-ai-blue-foreground">{numbered[1]}.</span><span><InlineMarkdown text={numbered[2]} /></span></div>
+    return <p key={index}><InlineMarkdown text={line} /></p>
+  })}</div>
+}
 
 export function AiChatPanel({ scheme }: { scheme: Scheme }) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState("")
   const [thinking, setThinking] = useState(false)
+  const [loadedSchemeId, setLoadedSchemeId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setMessages(getSchemeChatHistory(scheme.id))
+    setLoadedSchemeId(scheme.id)
+  }, [scheme.id])
+
+  useEffect(() => {
+    if (loadedSchemeId === scheme.id) saveSchemeChatHistory(scheme.id, messages)
+  }, [loadedSchemeId, messages, scheme.id])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" })
   }, [messages, thinking])
 
-  function ask(question: string) {
+  async function ask(question: string) {
     if (!question.trim() || thinking) return
     const userMsg: ChatMessage = { id: crypto.randomUUID(), role: "user", content: question }
     setMessages((prev) => [...prev, userMsg])
     setInput("")
     setThinking(true)
 
-    setTimeout(() => {
-      const { answer, followUps } = getFaqAnswer(scheme, question)
+    try {
+      const response = await fetch("/api/scheme-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${getAccessToken()}` },
+        body: JSON.stringify({ schemeId: scheme.id, question }),
+      })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error)
       const assistantMsg: ChatMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: answer,
-        suggestions: followUps,
+        content: result.answer,
+        suggestions: result.followUps,
       }
       setMessages((prev) => [...prev, assistantMsg])
+    } catch {
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "I couldn't answer that right now. Please try again or check the official portal.", suggestions: defaultSuggestedQuestions }])
+    } finally {
       setThinking(false)
-    }, 750)
+    }
   }
 
   return (
@@ -87,7 +130,7 @@ export function AiChatPanel({ scheme }: { scheme: Scheme }) {
                     : "neu-inset text-foreground",
                 )}
               >
-                {message.content}
+                {message.role === "assistant" ? <ChatAnswer content={message.content} /> : message.content}
               </div>
               {message.suggestions && (
                 <div className="flex flex-wrap gap-2">

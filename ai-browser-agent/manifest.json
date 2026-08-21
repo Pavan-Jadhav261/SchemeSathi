@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "GuideDot AI Navigator",
+  "description": "A visual, DOM-aware browser guidance assistant.",
+  "version": "0.1.0",
+  "action": { "default_popup": "src/popup/index.html", "default_title": "GuideDot" },
+  "background": { "service_worker": "src/background/service-worker.ts", "type": "module" },
+  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "host_permissions": ["<all_urls>", "http://localhost:3000/*"],
+  "content_scripts": [{ "matches": ["<all_urls>"], "js": ["src/content/index.ts"], "all_frames": true, "run_at": "document_idle" }]
+}

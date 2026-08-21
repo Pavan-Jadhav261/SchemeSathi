@@ -14,12 +14,30 @@ export default function SignupPage() {
   const [submitting, setSubmitting] = useState(false)
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
+  const [mobile, setMobile] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [error, setError] = useState("")
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.")
+      return
+    }
     setSubmitting(true)
-    setAuthUser({ name: fullName || "Citizen", email: email || "you@example.com" })
-    setTimeout(() => router.push("/dashboard"), 500)
+    setError("")
+    try {
+      const response = await fetch("/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: fullName, email, mobile, password }) })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || "Unable to create the account.")
+      setAuthUser(result.user, result.token)
+      router.push("/dashboard")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to create the account.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -82,6 +100,8 @@ export default function SignupPage() {
                     type="tel"
                     required
                     placeholder="98765 43210"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
                     className="h-12 rounded-xl pl-10 transition-shadow focus-visible:shadow-[0_0_0_4px_var(--ring)]"
                   />
                 </div>
@@ -94,7 +114,10 @@ export default function SignupPage() {
                     id="password"
                     type="password"
                     required
+                    minLength={8}
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="h-12 rounded-xl pl-10 transition-shadow focus-visible:shadow-[0_0_0_4px_var(--ring)]"
                   />
                 </div>
@@ -108,10 +131,14 @@ export default function SignupPage() {
                     type="password"
                     required
                     placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="h-12 rounded-xl pl-10 transition-shadow focus-visible:shadow-[0_0_0_4px_var(--ring)]"
                   />
                 </div>
               </Field>
+
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
               <Button type="submit" size="lg" className="h-12 font-semibold" disabled={submitting}>
                 {submitting ? "Creating your account…" : "Create Account"}
@@ -127,9 +154,6 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          This is a demo experience — any details will create your session.
-        </p>
       </div>
     </main>
   )
