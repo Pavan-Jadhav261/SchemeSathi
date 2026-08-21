@@ -22,6 +22,7 @@ export class AgentOverlay {
   setThinking(thinking: boolean) { this.avatar.classList.toggle("thinking", thinking) }
   followCursor(x: number, y: number) { if (this.active && !this.navigating) this.avatar.style.transform = `translate(${x + 18}px,${y - 38}px)` }
   showTranscript(text: string, title = "Listening") { this.transcript.querySelector("b")!.textContent = title; this.transcript.querySelector("span")!.textContent = text || "I’m listening…"; this.transcript.classList.add("show") }
+  clearTranscript(title = "Listening live") { this.transcript.querySelector("b")!.textContent = title; this.transcript.querySelector("span")!.textContent = ""; this.transcript.classList.add("show") }
   hideTranscript() { this.transcript.classList.remove("show") }
   clear() { this.cleanupPosition?.(); this.cleanupPosition = undefined; this.highlight.classList.remove("show"); this.label.classList.remove("show") }
   returnToCursor(x: number, y: number) { this.clear(); this.navigating = false; this.followCursor(x, y) }

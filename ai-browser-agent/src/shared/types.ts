@@ -1,6 +1,6 @@
 export type AgentStatus = "IDLE" | "LISTENING" | "THINKING" | "GUIDING" | "STOPPED" | "ERROR"
 export type AgentLanguage = "en-IN" | "hi-IN" | "ta-IN" | "te-IN" | "kn-IN" | "bn-IN" | "mr-IN"
-export type AgentSession = { active: boolean; goal: string; language: AgentLanguage; listening?: boolean }
+export type AgentSession = { active: boolean; goal: string; language: AgentLanguage; listening?: boolean; awaitingNavigation?: boolean; history?: string[] }
 export type AgentAction = "click" | "input" | "select" | "scroll" | "hover" | "highlight" | "wait" | "none"
 
 export type PageElement = {
@@ -35,5 +35,5 @@ export type ExtensionMessage =
   | { type: "GET_STATUS" }
   | { type: "GET_AGENT_SESSION" }
   | { type: "SAVE_AGENT_SESSION"; session: AgentSession }
-  | { type: "PLAN_REQUEST"; request: string; page: PageState; goal?: string; language: AgentLanguage }
+  | { type: "PLAN_REQUEST"; request: string; page: PageState; goal?: string; language: AgentLanguage; history?: string[] }
   | { type: "STATUS"; status: AgentStatus; detail: string }

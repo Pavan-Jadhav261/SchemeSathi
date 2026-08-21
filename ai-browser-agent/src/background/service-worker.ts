@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((message: ExtensionMessage, sender, sendRes
   void fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userRequest: message.request, page: message.page, session: { goal: message.goal || message.request, language: message.language } }),
+    body: JSON.stringify({ userRequest: message.request, page: message.page, session: { goal: message.goal || message.request, language: message.language, history: message.history || [] } }),
   })
     .then(async (response) => {
       if (!response.ok) throw new Error("The navigation service is unavailable.")
