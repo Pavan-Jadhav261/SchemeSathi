@@ -1,0 +1,310 @@
+import type { Scheme } from "./types"
+
+export const schemes: Scheme[] = [
+  {
+    id: "pm-kisan",
+    name: "PM-KISAN Samman Nidhi",
+    shortName: "PM-KISAN",
+    category: "farmers",
+    department: "Ministry of Agriculture & Farmers Welfare",
+    state: "All India",
+    overview:
+      "PM-KISAN gives small and marginal farmer families direct income support so they can meet input costs for farming, without any loan or repayment obligation.",
+    description:
+      "Under this scheme, eligible farmer families receive financial assistance directly into their bank accounts in three equal instalments, helping cover the cost of seeds, fertiliser and other agricultural inputs across crop cycles.",
+    benefit: "Direct income support paid in three instalments every year",
+    benefitAmount: "₹6,000 / year",
+    eligibility: [
+      { label: "Indian citizen", met: true },
+      { label: "Owns cultivable agricultural land", met: true },
+      { label: "Family landholding within scheme limits", met: true },
+      { label: "Not an income-tax payee in the family", met: true },
+    ],
+    eligibilitySummary: ["Farmer", "Eligible landholding", "Indian citizen"],
+    documents: [
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Used to verify your identity and link your bank account.", required: true },
+      { id: "land", name: "Land Ownership Documents", reason: "Confirms you are a landholding farmer.", required: true },
+      { id: "bank", name: "Bank Account Passbook", reason: "Instalments are transferred directly to this account.", required: true },
+      { id: "residence", name: "Residence Certificate", reason: "Confirms the state and district for record verification.", required: false },
+    ],
+    officialUrl: "https://pmkisan.gov.in",
+    applicationSteps: [
+      "Visit the official PM-KISAN portal or your nearest Common Service Centre.",
+      "Complete the farmer registration form with land and bank details.",
+      "Submit Aadhaar and land ownership documents for verification.",
+      "Track application status using your registration number.",
+    ],
+    lastUpdated: "2025-11-02",
+    source: {
+      department: "Ministry of Agriculture & Farmers Welfare, Government of India",
+      sourceUrl: "https://pmkisan.gov.in",
+      lastVerified: "2025-11-02",
+    },
+    tags: ["farmer", "income support", "agriculture"],
+    ageGroup: "18+",
+    incomeLimit: "Non income-tax payee",
+    gender: "all",
+    occupation: ["farmer"],
+  },
+  {
+    id: "ayushman-bharat",
+    name: "Ayushman Bharat — PM Jan Arogya Yojana",
+    shortName: "Ayushman Bharat (PM-JAY)",
+    category: "healthcare",
+    department: "Ministry of Health & Family Welfare",
+    state: "All India",
+    overview:
+      "PM-JAY provides eligible families with a health cover for secondary and tertiary hospitalisation, so a medical emergency does not become a financial crisis.",
+    description:
+      "Eligible families receive a cashless health cover that can be used at empanelled public and private hospitals across India for a wide range of medical and surgical procedures, with no restriction on family size or age.",
+    benefit: "Cashless hospitalisation cover for the whole family",
+    benefitAmount: "Up to ₹5,00,000 / year per family",
+    eligibility: [
+      { label: "Indian citizen", met: true },
+      { label: "Listed in SECC 2011 deprivation criteria or state extension", met: true },
+      { label: "No existing employer-based comprehensive health cover", met: true },
+    ],
+    eligibilitySummary: ["Low-income household", "Indian citizen", "No comparable health cover"],
+    documents: [
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Required to generate your PM-JAY health ID.", required: true },
+      { id: "ration", name: "Ration Card", reason: "Helps confirm household details for eligibility.", required: false },
+      { id: "income", name: "Income Certificate", reason: "May be used to confirm economic category.", required: false },
+    ],
+    officialUrl: "https://pmjay.gov.in",
+    applicationSteps: [
+      "Check your eligibility on the official PM-JAY beneficiary portal.",
+      "Visit an Ayushman Mitra desk at an empanelled hospital or a CSC.",
+      "Verify identity with Aadhaar to generate your Ayushman card.",
+      "Use the card for cashless treatment at any empanelled hospital.",
+    ],
+    lastUpdated: "2025-10-18",
+    source: {
+      department: "National Health Authority, Government of India",
+      sourceUrl: "https://pmjay.gov.in",
+      lastVerified: "2025-10-18",
+    },
+    tags: ["healthcare", "insurance", "hospitalisation"],
+    ageGroup: "All ages",
+    incomeLimit: "Low-income households",
+    gender: "all",
+  },
+  {
+    id: "pm-awas-yojana",
+    name: "Pradhan Mantri Awas Yojana",
+    shortName: "PM Awas Yojana",
+    category: "housing",
+    department: "Ministry of Housing & Urban Affairs",
+    state: "All India",
+    overview:
+      "PMAY helps eligible families build or buy their first home through interest subsidies and direct construction assistance in both urban and rural areas.",
+    description:
+      "The scheme offers credit-linked subsidy on home loans and direct financial assistance for construction, aimed at achieving housing for families that do not currently own a pucca house.",
+    benefit: "Interest subsidy on home loan or direct construction assistance",
+    benefitAmount: "Up to ₹2,67,000 subsidy",
+    eligibility: [
+      { label: "Does not own a pucca house anywhere in India", met: true },
+      { label: "Household income within scheme slab", met: true },
+      { label: "Family does not already own a government housing scheme benefit", met: true },
+    ],
+    eligibilitySummary: ["First-time homeowner", "Income within slab", "Indian citizen"],
+    documents: [
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Verifies applicant identity for the housing ledger.", required: true },
+      { id: "income", name: "Income Certificate", reason: "Determines your subsidy income slab.", required: true },
+      { id: "bank", name: "Bank Account Passbook", reason: "Subsidy is credited directly to this account.", required: true },
+      { id: "residence", name: "Residence Certificate", reason: "Confirms your current address for site verification.", required: false },
+    ],
+    officialUrl: "https://pmaymis.gov.in",
+    applicationSteps: [
+      "Check eligibility on the PMAY portal using your Aadhaar number.",
+      "Fill the online application with income and property details.",
+      "Submit documents at the Urban Local Body or bank branch.",
+      "Track sanction and subsidy disbursal status online.",
+    ],
+    lastUpdated: "2025-09-27",
+    source: {
+      department: "Ministry of Housing & Urban Affairs, Government of India",
+      sourceUrl: "https://pmaymis.gov.in",
+      lastVerified: "2025-09-27",
+    },
+    tags: ["housing", "subsidy", "home loan"],
+    incomeLimit: "Up to ₹18,00,000 / year (slab based)",
+    gender: "all",
+  },
+  {
+    id: "sukanya-samriddhi",
+    name: "Sukanya Samriddhi Yojana",
+    shortName: "Sukanya Samriddhi Yojana",
+    category: "women",
+    department: "Ministry of Finance (Department of Economic Affairs)",
+    state: "All India",
+    overview:
+      "A small savings scheme that lets parents build a secure education and marriage fund for their girl child, with one of the highest guaranteed interest rates among government savings schemes.",
+    description:
+      "Parents or legal guardians can open a savings account in the name of a girl child below 10 years and deposit small amounts regularly. The account matures after 21 years, providing a lump sum for education or marriage expenses.",
+    benefit: "High-interest guaranteed savings for a girl child's future",
+    benefitAmount: "~8.2% annual interest (govt. notified)",
+    eligibility: [
+      { label: "Girl child below 10 years of age", met: true },
+      { label: "Account opened by natural or legal guardian", met: true },
+      { label: "Maximum two accounts per family (exceptions apply)", met: true },
+    ],
+    eligibilitySummary: ["Girl child under 10", "Indian resident", "Opened by guardian"],
+    documents: [
+      { id: "birth", name: "Birth Certificate", reason: "Confirms the age of the girl child.", required: true },
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Identity proof of the guardian and child.", required: true },
+      { id: "residence", name: "Residence Certificate", reason: "Confirms guardian's residential address.", required: false },
+      { id: "photo", name: "Passport Photo", reason: "Required for account opening form.", required: true },
+    ],
+    officialUrl: "https://www.india.gov.in/spotlight/sukanya-samriddhi-yojana",
+    applicationSteps: [
+      "Visit any authorised post office or participating bank branch.",
+      "Fill the SSY account opening form for the girl child.",
+      "Submit birth certificate and guardian's identity documents.",
+      "Make the minimum initial deposit to activate the account.",
+    ],
+    lastUpdated: "2025-11-10",
+    source: {
+      department: "Department of Economic Affairs, Ministry of Finance",
+      sourceUrl: "https://www.india.gov.in/spotlight/sukanya-samriddhi-yojana",
+      lastVerified: "2025-11-10",
+    },
+    tags: ["women", "girl child", "savings"],
+    ageGroup: "Girl child under 10",
+    gender: "female",
+  },
+  {
+    id: "national-scholarship",
+    name: "National Scholarship Portal — Merit-cum-Means Scholarship",
+    shortName: "National Scholarship Portal",
+    category: "students",
+    department: "Ministry of Education",
+    state: "All India",
+    overview:
+      "A unified scholarship scheme that supports meritorious students from economically weaker sections to continue their school or higher education without financial hardship.",
+    description:
+      "The scholarship covers tuition fees and provides a maintenance allowance for eligible students enrolled in recognised institutions, disbursed directly into the student's bank account through the National Scholarship Portal.",
+    benefit: "Tuition fee support and maintenance allowance",
+    benefitAmount: "Up to ₹20,000 / year",
+    eligibility: [
+      { label: "Enrolled in a recognised school or college", met: true },
+      { label: "Minimum qualifying marks in previous exam", met: true },
+      { label: "Family income within scheme limit", met: true },
+    ],
+    eligibilitySummary: ["Enrolled student", "Meets merit criteria", "Family income within limit"],
+    documents: [
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Required for portal registration and verification.", required: true },
+      { id: "income", name: "Income Certificate", reason: "Confirms family income eligibility.", required: true },
+      { id: "marksheet", name: "Previous Marksheet", reason: "Confirms merit criteria for the scholarship.", required: true },
+      { id: "bank", name: "Bank Account Passbook", reason: "Scholarship amount is credited to this account.", required: true },
+    ],
+    officialUrl: "https://scholarships.gov.in",
+    applicationSteps: [
+      "Register as a new student on the National Scholarship Portal.",
+      "Fill in academic, income and bank account details.",
+      "Upload required documents and submit for institution verification.",
+      "Track disbursal status on your NSP dashboard.",
+    ],
+    lastUpdated: "2025-08-30",
+    source: {
+      department: "Ministry of Education, Government of India",
+      sourceUrl: "https://scholarships.gov.in",
+      lastVerified: "2025-08-30",
+    },
+    tags: ["student", "scholarship", "education"],
+    ageGroup: "School / College students",
+    incomeLimit: "Up to ₹2,50,000 / year (family)",
+    gender: "all",
+    occupation: ["student"],
+  },
+  {
+    id: "pm-mudra-yojana",
+    name: "Pradhan Mantri Mudra Yojana",
+    shortName: "PM Mudra Yojana",
+    category: "entrepreneurs",
+    department: "Ministry of Finance (Department of Financial Services)",
+    state: "All India",
+    overview:
+      "PMMY provides collateral-free loans to small and micro business owners to start, grow or stabilise a non-farm income-generating business.",
+    description:
+      "Loans are offered under three categories — Shishu, Kishor and Tarun — based on the stage and funding needs of the business, extended through banks, NBFCs and microfinance institutions with no collateral required.",
+    benefit: "Collateral-free business loans up to ₹10 lakh",
+    benefitAmount: "Up to ₹10,00,000",
+    eligibility: [
+      { label: "Non-farm income generating business", met: true },
+      { label: "Indian citizen with a viable business plan", met: true },
+      { label: "No default history with formal lenders", met: true },
+    ],
+    eligibilitySummary: ["Small business owner", "Indian citizen", "Viable business plan"],
+    documents: [
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Identity verification for loan processing.", required: true },
+      { id: "business-plan", name: "Business Plan / Proof", reason: "Demonstrates the purpose and viability of the loan.", required: true },
+      { id: "bank", name: "Bank Account Passbook", reason: "Loan amount is disbursed to this account.", required: true },
+      { id: "residence", name: "Residence Certificate", reason: "Confirms your business operating address.", required: false },
+    ],
+    officialUrl: "https://www.mudra.org.in",
+    applicationSteps: [
+      "Prepare a short business plan describing your funding need.",
+      "Approach any participating bank, NBFC or MFI branch.",
+      "Submit identity, address and business proof documents.",
+      "Receive sanction and disbursal as per the loan category.",
+    ],
+    lastUpdated: "2025-07-14",
+    source: {
+      department: "Department of Financial Services, Ministry of Finance",
+      sourceUrl: "https://www.mudra.org.in",
+      lastVerified: "2025-07-14",
+    },
+    tags: ["entrepreneur", "business loan", "collateral-free"],
+    gender: "all",
+    occupation: ["business-owner"],
+  },
+  {
+    id: "atal-pension-yojana",
+    name: "Atal Pension Yojana",
+    shortName: "Atal Pension Yojana",
+    category: "senior-citizens",
+    department: "Ministry of Finance (PFRDA)",
+    state: "All India",
+    overview:
+      "A voluntary pension scheme for workers in the unorganised sector, guaranteeing a fixed monthly pension after the age of 60 in exchange for regular contributions.",
+    description:
+      "Subscribers choose a monthly pension amount and contribute a small sum regularly until age 60, after which they receive the guaranteed pension for life, with the corpus payable to the spouse or nominee thereafter.",
+    benefit: "Guaranteed monthly pension after age 60",
+    benefitAmount: "₹1,000 – ₹5,000 / month",
+    eligibility: [
+      { label: "Age between 18 and 40 years", met: true },
+      { label: "Holds a savings bank account", met: true },
+      { label: "Not covered under a statutory social security scheme", met: true },
+    ],
+    eligibilitySummary: ["Age 18–40", "Unorganised sector worker", "Active bank account"],
+    documents: [
+      { id: "aadhaar", name: "Aadhaar Card", reason: "Required for subscriber identification.", required: true },
+      { id: "bank", name: "Bank Account Passbook", reason: "Monthly contributions are auto-debited from this account.", required: true },
+      { id: "mobile", name: "Mobile Number", reason: "Used for contribution and pension notifications.", required: true },
+    ],
+    officialUrl: "https://npscra.nsdl.co.in/scheme-details.php",
+    applicationSteps: [
+      "Visit your bank branch or the eNPS portal.",
+      "Choose your desired monthly pension amount.",
+      "Complete the APY subscription form with bank details.",
+      "Set up auto-debit for your regular contribution.",
+    ],
+    lastUpdated: "2025-06-05",
+    source: {
+      department: "Pension Fund Regulatory and Development Authority",
+      sourceUrl: "https://npscra.nsdl.co.in/scheme-details.php",
+      lastVerified: "2025-06-05",
+    },
+    tags: ["senior citizens", "pension", "savings"],
+    ageGroup: "18–40 years (pension from 60)",
+    gender: "all",
+  },
+]
+
+export function getSchemeById(id: string) {
+  return schemes.find((s) => s.id === id)
+}
+
+export function getSchemesByCategory(category: string) {
+  return schemes.filter((s) => s.category === category)
+}
