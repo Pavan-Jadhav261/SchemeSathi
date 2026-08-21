@@ -156,7 +156,7 @@ export default function FindSchemePage() {
                 <Label htmlFor="age">Age</Label>
                 <Input
                   id="age"
-                  type="number"
+                  type="text"
                   min={0}
                   max={100}
                   placeholder="28"
